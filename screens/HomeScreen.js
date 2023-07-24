@@ -1,6 +1,5 @@
 import { ImageBackground, ScrollView } from "react-native";
 import React from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import {
   widthPercentageToDP as wp,
@@ -14,9 +13,8 @@ import { data } from "../data/movieData";
 import Movies from "../components/Movies";
 
 const HomeScreen = ({ navigation }) => {
-
   const movies = data.movies;
-  
+
   return (
     <>
       <StatusBar

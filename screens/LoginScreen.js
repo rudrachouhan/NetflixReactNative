@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -64,12 +63,12 @@ const LoginScreen = () => {
             flex: 1,
             height: Dimensions.get("screen").height,
           }}
-          >
-            <Header login={false} />
+        >
+          <Header login={false} />
           <View
             className="flex items-center justify-center bg-[rgba(0,0,0,0.5)]"
             style={{ flex: 1 }}
-            >
+          >
             <View
               className="bg-black rounded-xl pt-12"
               style={{ width: wp(90), height: hp(50) }}

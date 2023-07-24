@@ -1,7 +1,5 @@
 import { NavigationContainer } from "@react-navigation/native";
-import {
-  createNativeStackNavigator,
-} from "@react-navigation/native-stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { KeyboardAvoidingView, Platform } from "react-native";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
@@ -14,8 +12,8 @@ import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import ViewMovie from "./screens/ViewMovie";
 import MyList from "./screens/MyList";
 import SearchScreen from "./screens/SearchScreen";
-import { LogBox } from 'react-native';
-LogBox.ignoreLogs(['Warning: ...','Error: ...']);
+import { LogBox } from "react-native";
+LogBox.ignoreLogs(["Warning: ...", "Error: ..."]);
 LogBox.ignoreAllLogs();
 
 const Stack = createNativeStackNavigator();
@@ -88,7 +86,7 @@ export default function App() {
       >
         <Stack.Navigator
           screenOptions={screenOptions}
-          initialRouteName={'Login'}
+          initialRouteName={"Login"}
         >
           <Stack.Screen
             name="Login"
@@ -125,10 +123,9 @@ export default function App() {
             component={BottomStackScreen}
             options={{ headerShown: false }}
           />
-          <Stack.Screen name='movie' component={ViewMovie} />
-          <Stack.Screen name='MyList' component={MyList} />
-          <Stack.Screen name='search' component={SearchScreen}/>
-          
+          <Stack.Screen name="movie" component={ViewMovie} />
+          <Stack.Screen name="MyList" component={MyList} />
+          <Stack.Screen name="search" component={SearchScreen} />
         </Stack.Navigator>
       </KeyboardAvoidingView>
     </NavigationContainer>

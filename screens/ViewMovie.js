@@ -1,6 +1,11 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
 import React, { useState, useEffect } from "react";
-import { Ionicons, Feather, AntDesign } from "@expo/vector-icons";
+import {
+  Ionicons,
+  Feather,
+  AntDesign,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import {
   useFonts,
   Montserrat_200ExtraLight,
@@ -17,7 +22,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { firebase, auth } from "../firebase";
+import { firebase } from "../firebase";
 
 const ViewMovie = ({ route, navigation }) => {
   let [fontsLoaded] = useFonts({
@@ -29,22 +34,58 @@ const ViewMovie = ({ route, navigation }) => {
     Montserrat_800ExtraBold,
   });
 
+  const _ = require("lodash");
+
   const [loading, setLoading] = useState(true);
-  const [movie, setMovie] = useState(null);
-  const [user, setUser] = useState(null);
+  const [movie, setMovie] = useState([]);
+  const [list, setList] = useState([]);
+
+  const showAddAlert = () => {
+    Alert.alert(
+      "Done", // Title of the alert
+      "Movie has been added to your My List!", // Message of the alert
+      [
+        {
+          text: "OK",
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const showRemoveAlert = () => {
+    Alert.alert(
+      "Done", // Title of the alert
+      "Movie has been removed from your My List!", // Message of the alert
+      [
+        {
+          text: "OK",
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
   useEffect(() => {
-    firebase.firestore().collection("users")
-      .doc(firebase.auth().currentUser.email)
-      .onSnapshot((doc) => {
+    firebase
+      .firestore()
+      .collection("users")
+      .doc(firebase.auth().currentUser.uid)
+      .get()
+      .then((doc) => {
         if (doc.exists) {
-          setUser(doc.data());
+          const list = doc.data().list;
+          setList(list);
+        } else {
+          console.log("Document not found!");
         }
       });
-  }, [firebase.auth().currentUser]);
+  }, [list]);
 
   useEffect(() => {
-    firebase.firestore().collection("movies")
+    firebase
+      .firestore()
+      .collection("movies")
       .doc(route.params.data.id)
       .onSnapshot((doc) => {
         setMovie(doc.data());
@@ -52,6 +93,8 @@ const ViewMovie = ({ route, navigation }) => {
 
     setLoading(false);
   }, [route]);
+
+  const arrayExists = list.some((arr) => _.isEqual(arr, movie));
 
   return (
     fontsLoaded && (
@@ -69,7 +112,6 @@ const ViewMovie = ({ route, navigation }) => {
               uri: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
             }}
             isMuted={false}
-            // useNativeControls={false}
             shouldPlay={true}
             style={{ height: 225, marginTop: 15 }}
             resizeMode="contain"
@@ -120,28 +162,26 @@ const ViewMovie = ({ route, navigation }) => {
           </Text>
 
           <View className="flex-row justify-center items-center m-5 mt-1">
-            {movie && user?.list.includes(movie.id) ? (
+            {arrayExists ? (
               <TouchableOpacity
                 activeOpacity={0.5}
                 className="flex justify-center items-center mt-5 m-7"
                 onPress={() => {
-                  firebase.firestore().collection("users")
-                    .doc(firebase.auth().currentUser.email)
-                    .collection("list")
-                    .doc(movie.id)
-                    .delete();
-
-                  var list = user.list;
-                  list.splice(list.indexOf(movie.id), 1);
-
-                  firebase.firestore().collection("users")
-                    .doc(firebase.auth().currentUser.email)
+                  const indexToRemove = list.findIndex((arr) =>
+                    _.isEqual(arr, movie)
+                  );
+                  list.splice(indexToRemove, 1);
+                  firebase
+                    .firestore()
+                    .collection("users")
+                    .doc(firebase.auth().currentUser.uid)
                     .update({
                       list,
                     });
+                  showRemoveAlert();
                 }}
               >
-                <Feather name="check" size={35} color="white" />
+                <MaterialIcons name="check" size={35} color="white" />
                 <Text
                   className="text-white text-sm"
                   style={{ fontFamily: "Montserrat_300Light" }}
@@ -154,25 +194,29 @@ const ViewMovie = ({ route, navigation }) => {
                 activeOpacity={0.5}
                 className="flex justify-center items-center mt-5 m-7"
                 onPress={() => {
-                  firebase.firestore().collection("users")
-                    .doc(firebase.auth().currentUser.email)
-                    .collection("list")
-                    .doc(movie.id)
-                    .set({
-                      movieID: movie.id,
-                      banner: movie.banner,
+                  firebase
+                    .firestore()
+                    .collection("users")
+                    .doc(firebase.auth().currentUser.uid)
+                    .get()
+                    .then((doc) => {
+                      if (doc.exists) {
+                        list.push(movie);
+                        firebase
+                          .firestore()
+                          .collection("users")
+                          .doc(firebase.auth().currentUser.uid)
+                          .update({
+                            list,
+                          });
+                      } else {
+                        console.log("Document not found!");
+                      }
                     });
-
-                  var list = user.list;
-                  list.push(movie.id);
-                  firebase.firestore().collection("users")
-                    .doc(firebase.auth().currentUser.email)
-                    .update({
-                      list,
-                    });
+                  showAddAlert();
                 }}
               >
-                <Ionicons name="add-outline" size={35} color="white" />
+                <MaterialIcons name="add" size={35} color="white" />
                 <Text
                   className="text-white text-sm"
                   style={{ fontFamily: "Montserrat_300Light" }}

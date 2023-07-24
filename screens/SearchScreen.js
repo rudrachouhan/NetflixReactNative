@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, Dimensions, TextInput } from "react-native";
+import { View, TextInput, ScrollView, Image, Text } from "react-native";
 import { firebase } from "../firebase";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
-import styled from "styled-components/native";
 import Header from "../components/Header";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native";
 import {
-  MaterialIcons,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native-gesture-handler";
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 import {
   useFonts,
   Montserrat_200ExtraLight,
@@ -20,37 +20,6 @@ import {
   Montserrat_700Bold,
   Montserrat_800ExtraBold,
 } from "@expo-google-fonts/montserrat";
-
-const Container = styled.ScrollView`
-  flex: 1;
-  background-color: #000;
-`;
-
-const TopResultsText = styled.Text`
-  color: white;
-  font-size: 28px;
-  margin: 20px;
-  margin-top: 10px;
-  margin-left: 25px;
-  font-family: "Montserrat_600SemiBold";
-  font-weight: 600;
-`;
-
-const MoviePoster = styled.Image`
-  width: ${Math.round((Dimensions.get("window").width * 29.5) / 100)}px;
-  height: 200px;
-`;
-
-const MovieCard = styled.View`
-  padding-right: 9px;
-`;
-
-const ResultsWrapper = styled.View`
-  flex-direction: row;
-  flex-wrap: wrap;
-  padding: 10px;
-  justify-content: center;
-`;
 
 const SearchScreen = () => {
   const navigation = useNavigation();
@@ -69,17 +38,23 @@ const SearchScreen = () => {
   });
 
   useEffect(() => {
-    firebase.firestore().collection("movies").onSnapshot((snapshot) => {
-      setResults(snapshot.docs.map((doc) => doc.data()));
-    });
+    firebase
+      .firestore()
+      .collection("movies")
+      .onSnapshot((snapshot) => {
+        setResults(snapshot.docs.map((doc) => doc.data()));
+      });
 
     setResults2(results);
   }, []);
 
   useEffect(() => {
-    firebase.firestore().collection("movies").onSnapshot((snapshot) => {
-      setResults(snapshot.docs.map((doc) => doc.data()));
-    });
+    firebase
+      .firestore()
+      .collection("movies")
+      .onSnapshot((snapshot) => {
+        setResults(snapshot.docs.map((doc) => doc.data()));
+      });
 
     if (results != undefined) {
       const finalResults = results.filter((result) => {
@@ -94,10 +69,10 @@ const SearchScreen = () => {
     fontsLoaded && (
       <>
         <StatusBar style="light" />
-        <Container>
+        <ScrollView style={{ flex: 1, backgroundColor: "#000" }}>
           <Header login={true} goBack={navigation.goBack} />
           <View>
-            <View className='bg-[#333333] flex-row mt-4 w-[95%] mx-auto rounded-lg items-center py-1'>
+            <View className="bg-[#333333] flex-row mt-4 w-[95%] mx-auto rounded-lg items-center py-1">
               <MaterialIcons
                 name="search"
                 size={30}
@@ -108,8 +83,8 @@ const SearchScreen = () => {
                 value={search}
                 onChangeText={(text) => setSearch(text)}
                 placeholderTextColor="#7f7f7f"
-                              placeholder="Search for a show, movie, genre etc."
-                              className='text-white'
+                placeholder="Search for a show, movie, genre etc."
+                className="text-white"
               />
               <TouchableOpacity activeOpacity={0.5}>
                 <MaterialCommunityIcons
@@ -123,8 +98,13 @@ const SearchScreen = () => {
           </View>
           {results2 && (
             <>
-              <TopResultsText>Top Searches</TopResultsText>
-              <ResultsWrapper>
+              <Text
+                className="text-white text-2xl m-5 mt-3 ml-6 font-semibold"
+                style={{ fontFamily: "Montserrat_600SemiBold" }}
+              >
+                Top Searches
+              </Text>
+              <View className="flex-row flex-wrap justify-center p-3">
                 {results2.map((movie, item) => {
                   return (
                     <TouchableOpacity
@@ -136,19 +116,24 @@ const SearchScreen = () => {
                         });
                       }}
                     >
-                      <MovieCard>
-                        <MoviePoster
+                      <View className="pr-2">
+                        <Image
                           resizeMode="cover"
                           source={{ uri: movie.banner }}
+                          style={{
+                            width: wp(40),
+                            height: hp(40),
+                            marginBottom: 10,
+                          }}
                         />
-                      </MovieCard>
+                      </View>
                     </TouchableOpacity>
                   );
                 })}
-              </ResultsWrapper>
+              </View>
             </>
           )}
-        </Container>
+        </ScrollView>
       </>
     )
   );

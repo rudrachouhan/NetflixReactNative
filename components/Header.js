@@ -14,7 +14,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { AntDesign, MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 const Header = ({ login, goBack, label }) => {
   const navigation = useNavigation();
@@ -29,7 +29,7 @@ const Header = ({ login, goBack, label }) => {
   return (
     fontsLoaded &&
     (login ? (
-      <View className='flex-row mt-14 ml-4 justify-between items-center'>
+      <View className="flex-row mt-14 ml-4 justify-between items-center">
         <View>
           {goBack ? (
             <TouchableOpacity style={{ marginLeft: 10 }} onPress={goBack}>
@@ -44,7 +44,7 @@ const Header = ({ login, goBack, label }) => {
           )}
           {label && <Text>{label}</Text>}
         </View>
-        <View className='flex-row items-center'>
+        <View className="flex-row items-center">
           {goBack ? (
             <TouchableOpacity
               activeOpacity={0.5}
@@ -75,25 +75,39 @@ const Header = ({ login, goBack, label }) => {
             </TouchableOpacity>
           )}
           {goBack ? (
-            <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.navigate('Login')}>
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={() => navigation.navigate("Login")}
+            >
               <Image
                 source={{
                   uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSu9VhASGSfFj_77fZ748zUwZZ0HbLv35YYrd93apRFEjDlRDUcoBJlyiiLfzxymVaJMp0&usqp=CAU",
                 }}
                 resizeMode="contain"
-                style={{width:wp(10),height:wp(10),borderRadius:5,marginRight:20}}
-                
+                style={{
+                  width: wp(10),
+                  height: wp(10),
+                  borderRadius: 5,
+                  marginRight: 20,
+                }}
               />
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.navigate('Login')}>
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={() => navigation.navigate("Login")}
+            >
               <Image
                 source={{
                   uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSu9VhASGSfFj_77fZ748zUwZZ0HbLv35YYrd93apRFEjDlRDUcoBJlyiiLfzxymVaJMp0&usqp=CAU",
                 }}
-                  resizeMode="contain"
-                  style={{width:wp(10),height:wp(10),borderRadius:5,marginRight:20}}
-                  
+                resizeMode="contain"
+                style={{
+                  width: wp(10),
+                  height: wp(10),
+                  borderRadius: 5,
+                  marginRight: 20,
+                }}
               />
             </TouchableOpacity>
           )}

@@ -12,7 +12,7 @@ const HeaderTabs = () => {
       <TouchableOpacity>
         <Text className="text-base font-normal text-white">Movies</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('MyList')}>
+      <TouchableOpacity onPress={() => navigation.navigate("MyList")}>
         <Text className="text-base font-normal text-white">My List</Text>
       </TouchableOpacity>
     </View>

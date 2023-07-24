@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -15,7 +14,7 @@ import {
 
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import { auth,firebase } from "../firebase";
+import { auth, firebase } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const RegisterScreen = () => {
@@ -40,39 +39,24 @@ const RegisterScreen = () => {
         email,
         password
       );
-      if (firstname && firstname.length > 0) {
-            const data = {
-              firstName: firstname,
-              lastName: lastname,
-              email: email,
-              list: [],
-            };
-            todoRef.add(data).then(() => {
-              setFirstName('');
-              setLastName('');
-            }).catch((error) => {
-              alert(error);
-            })
+      const currentUser = firebase.auth().currentUser;
+      const usersRef = firebase
+        .firestore()
+        .collection("users")
+        .doc(currentUser.uid);
 
-         }
-      // const currentUser = firebase.auth().currentUser;
-      // const usersRef = firebase
-      //   .firestore()
-      //   .collection("users")
-      //   .doc(currentUser.uid);
-
-      // // Set the user document with the necessary fields
-      // usersRef
-      //   .set({
-      //     email: currentUser.email,
-      //     list: [], // Initialize the "list" as an empty array
-      //   })
-      //   .then(() => {
-      //     console.log("User document created successfully");
-      //   })
-      //   .catch((error) => {
-      //     console.error("Error creating user document:", error);
-      //   });
+      // Set the user document with the necessary fields
+      usersRef
+        .set({
+          email: currentUser.email,
+          list: [],
+        })
+        .then(() => {
+          console.log("User document created successfully");
+        })
+        .catch((error) => {
+          console.error("Error creating user document:", error);
+        });
       console.log(response);
       navigation.navigate("BottomStack");
     } catch (error) {
